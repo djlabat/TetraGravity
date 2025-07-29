@@ -1,51 +1,63 @@
 const container = document. querySelector(".container")
 const cells = document. querySelectorAll(".cell")
 
-const monominoStyle = `gray`
-const emptyCellStyle = `#111`
+const rnd = (n) => Math.floor(Math.random()*n)
 
 let monominoPosition = 12
 
-// POCEO SAM DA ZAMENJUJEM MONOMINO ZA TERAMINO
-// const tetraminoShapes = [ // pocetne pozicije
-// 	[12,13,17,18], // 0
-// 	[2,5,6,7] // L
-// ]
+let rndNum = rnd(7)
 
+const tetraminoShapes = [ // pocetne pozicije
+	[0,1,5,6], // 0
+	[0,1,2,3], // I
+	[0,1,6,7], // Z
+	[1,5,6,7], // T
+	[1,2,5,6], // S
+	[2,5,6,7], // L
+	[0,5,6,7], // J
+]
 
+let tetraminoCellPositions = tetraminoShapes[rndNum]
+
+for (let t of tetraminoCellPositions) {
+		cells[t].classList.add("monomino")
+}
 
 // KRETANJE MONOMINO-a U BOARD-u
-addEventListener("keydown", (e)=>{
-	if (e.key === "ArrowDown" && monominoPosition < 20) {
-		cells[monominoPosition].classList.remove("monomino")
-		cells[monominoPosition += 5].classList.add("monomino")
+addEventListener("keydown", (e)=>{ 
 
-		// for (posMn of currentTetramino) {
-		// 	cells[posMn].classList.remove("monomino")
-		// 	cells[posMn + 5].classList.add("monomino")
-		// 	tetraminoPosition[posMn] += 5
-		// }
+	if (e.key === "ArrowDown" && monominoPosition < 20 ) {
 
+		// remove .monomino | change position | add .monomino
+		for (let t of tetraminoCellPositions) cells[t].classList.remove("monomino")
+		for (let i in tetraminoCellPositions) tetraminoCellPositions[i] += 5
+		for (let t of tetraminoCellPositions) cells[t].classList.add("monomino")
 	}
 })
 
 addEventListener("keydown", (e)=>{
 	if (e.key === "ArrowUp" && monominoPosition > 4) {
-		cells[monominoPosition].classList.remove("monomino")
-		cells[monominoPosition -= 5].classList.add("monomino")
+
+		for (let t of tetraminoCellPositions) cells[t].classList.remove("monomino")
+		for (let i in tetraminoCellPositions) tetraminoCellPositions[i] -= 5
+		for (let t of tetraminoCellPositions) cells[t].classList.add("monomino")
 	}
 })
 
 addEventListener("keydown", (e)=>{
-	if (e.key === "ArrowLeft" && monominoPosition > 0 && monominoPosition % 5 != 0) {
-		cells[monominoPosition].classList.remove("monomino")
-		cells[monominoPosition -= 1].classList.add("monomino")
+	if (e.key === "ArrowLeft" && monominoPosition > 0 && monominoPosition % 5 != 0) {		// remove .monomino | change position | add .monomino
+
+		for (let t of tetraminoCellPositions) cells[t].classList.remove("monomino")
+		for (let i in tetraminoCellPositions) tetraminoCellPositions[i] -= 1
+		for (let t of tetraminoCellPositions) cells[t].classList.add("monomino")
 	}
 })
 
 addEventListener("keydown", (e)=>{
 	if (e.key === "ArrowRight" && monominoPosition < 24 && monominoPosition % 5 != 4) {
-		cells[monominoPosition].classList.remove("monomino")
-		cells[monominoPosition += 1].classList.add("monomino")
+
+		for (let t of tetraminoCellPositions) cells[t].classList.remove("monomino")
+		for (let i in tetraminoCellPositions) tetraminoCellPositions[i] += 1
+		for (let t of tetraminoCellPositions) cells[t].classList.add("monomino")
 	}
 })
