@@ -20,6 +20,15 @@
 
 	- Kada se fixira cela jedna linija ona nestaje.
 
+--------------------------
+
+Rotacija tetrominoa (tmn) zapravo znaci smena shape-a.
+
+Ukupno ima 19 shape-a:
+O 1 | I 2 | Z 2 | T 4 | S 2 | L 4 | J 4
+
+Svaki shejp treba
+
 BOARD:
 [
 	[. . . . .]
