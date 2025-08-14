@@ -6,10 +6,14 @@ const boardHight = 5
 
 let rndNum = rnd(7)
 
-////////////////////
-// UTIL FUNCTIONS //
-////////////////////
-
+/*
+██╗   ██╗████████╗██╗██╗     ███████╗
+██║   ██║╚══██╔══╝██║██║     ██╔════╝
+██║   ██║   ██║   ██║██║     ███████╗
+██║   ██║   ██║   ██║██║     ╚════██║
+╚██████╔╝   ██║   ██║███████╗███████║
+ ╚═════╝    ╚═╝   ╚═╝╚══════╝╚══════╝
+ */
 function rnd (n) {return Math.floor(Math.random()*n)}
 function clearClass (clas) {
 	for (let t of tetraminoPosition) cells[t].classList.remove(clas)
@@ -239,13 +243,17 @@ for (let t of tetraminoPosition) {
 
 
 
-/////////////////////////////////
-// TETROMINO MOVEMENT IN BOARD //
-/////////////////////////////////
+/*
+███╗   ███╗ ██████╗ ██╗   ██╗███████╗
+████╗ ████║██╔═══██╗██║   ██║██╔════╝
+██╔████╔██║██║   ██║██║   ██║█████╗  
+██║╚██╔╝██║██║   ██║╚██╗ ██╔╝██╔══╝  
+██║ ╚═╝ ██║╚██████╔╝ ╚████╔╝ ███████╗
+╚═╝     ╚═╝ ╚═════╝   ╚═══╝  ╚══════╝*/
 
 // _DOWN_                      
 addEventListener("keydown", (e) => {
-	if (e.key === "ArrowDown" && tetraminoPosition.at(-1) < (boradWidth*boardHight - boradWidth) ) { 
+if (e.key === "ArrowDown" && tetraminoPosition.at(-1) < (boradWidth*boardHight - boradWidth) ) { 
 		clearClass("monomino")
 		changePosition(boradWidth)
 		addClass("monomino")
@@ -286,19 +294,27 @@ addEventListener("keydown", (e) => {
 
 
 
-//////////////
-// ROTACIJE //
-//////////////
+/*
+██████╗  ██████╗ ████████╗ █████╗ ████████╗███████╗
+██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗╚══██╔══╝██╔════╝
+██████╔╝██║   ██║   ██║   ███████║   ██║   █████╗  
+██╔══██╗██║   ██║   ██║   ██╔══██║   ██║   ██╔══╝  
+██║  ██║╚██████╔╝   ██║   ██║  ██║   ██║   ███████╗
+╚═╝  ╚═╝ ╚═════╝    ╚═╝   ╚═╝  ╚═╝   ╚═╝   ╚══════╝*/
 
-const tetrominoRotationState = [0,1,2,3] // up, right, down, left 
-let currentTetRotState = tetrominoRotationState[0]
+let currentTetRotState = 0 // it can be 0, 1, 2, 3 => up, right, down, left 
 
 
 
 
 
-
-function rotationLST_CW (e) { 
+/*          ██╗     ███████╗████████╗          ██╗  
+            ██║     ██╔════╝╚══██╔══╝          ╚██╗ 
+            ██║     ███████╗   ██║       █████╗ ╚██╗
+            ██║     ╚════██║   ██║       ╚════╝ ██╔╝
+            ███████╗███████║   ██║             ██╔╝ 
+            ╚══════╝╚══════╝   ╚═╝             ╚═╝  */
+function rotation_LST_CW (e) {	
 
 	if (e.key === "x" && rndNum !== 0 && rndNum !==1) { 
 
@@ -386,14 +402,18 @@ function rotationLST_CW (e) {
 	}	
 
 }
-addEventListener("keydown", rotationLST_CW)
+addEventListener("keydown", rotation_LST_CW)
 
 
 
 
-
-
-function rotationLST_CCW (e) { 
+/*██╗          ██╗     ███████╗████████╗
+ ██╔╝          ██║     ██╔════╝╚══██╔══╝
+██╔╝ █████╗    ██║     ███████╗   ██║   
+╚██╗ ╚════╝    ██║     ╚════██║   ██║   
+ ╚██╗          ███████╗███████║   ██║   
+  ╚═╝          ╚══════╝╚══════╝   ╚═╝   */
+function rotation_LST_CCW (e) { 
 
 	if (e.key === "z" && rndNum !== 0 && rndNum !==1) {
 
@@ -473,100 +493,19 @@ function rotationLST_CCW (e) {
 	}	
 
 }
-addEventListener("keydown", rotationLST_CCW)
+addEventListener("keydown", rotation_LST_CCW)
 
 
 
 
 
-
-function rotationI_CCW (e) {
-
-	if (e.key === "z" && rndNum == 1) {
-
-		if (currentTetRotState === 0){
-			clearClass("monomino")
-
-			console.log("differencePosition:", calcDifferencePosition())
-
-			let differencePosition = sideKickOff_I(calcDifferencePosition())
-
-			console.log("differencePosition:", differencePosition)
-
-			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
-			tetraminoPosition = [...tetraminoStartingPosition[rndNum][3]].map(v =>  // [0] konst za rotaciju na dole
-				(typeof v) === 'number' ? 
-				v + differencePosition : String(v - -differencePosition))
-
-			addClass("monomino")
-			currentTetRotState = 3
-
-		} else if (currentTetRotState === 3){
-			clearClass("monomino")
-
-			console.log("differencePosition:", calcDifferencePosition())
-
-			let differencePosition = sideKickOff_I(calcDifferencePosition())
-
-			console.log("differencePosition:", differencePosition)
-
-			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
-			tetraminoPosition = [...tetraminoStartingPosition[rndNum][2]].map(v => // [0] konst za rotaciju na dole
-				(typeof v) === 'number' ? 
-				v + differencePosition : String(v - -differencePosition)
-			)
-
-			addClass("monomino")
-			currentTetRotState = 2
-
-		} else if (currentTetRotState === 2){
-			clearClass("monomino")
-
-			console.log("differencePosition:", calcDifferencePosition())
-
-			let differencePosition = sideKickOff_I(calcDifferencePosition())
-
-			console.log("differencePosition:", differencePosition)
-
-			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
-			tetraminoPosition = [...tetraminoStartingPosition[rndNum][1]].map(v => // [0] konst za rotaciju na dole
-				(typeof v) === 'number' ? 
-				v + differencePosition : String(v - -differencePosition)
-			)
-
-			addClass("monomino")
-			currentTetRotState = 1
-
-		} else if (currentTetRotState === 1){
-			clearClass("monomino")
-
-			console.log("differencePosition:", calcDifferencePosition())
-
-			let differencePosition = sideKickOff_I(calcDifferencePosition())
-
-			console.log("differencePosition:", differencePosition)
-
-			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
-			tetraminoPosition = [...tetraminoStartingPosition[rndNum][0]].map(v => // [0] konst za rotaciju na dole
-				(typeof v) === 'number' ? 
-				v + differencePosition : String(v - -differencePosition)
-			)
-
-			addClass("monomino")
-			currentTetRotState = 0
-
-		}
-
-	}
-	// 1. i poslednji se krecu kao konj u sahu
-	// 2. i 3. se vrte u krug
-	// nema centra
-}
-addEventListener("keydown", rotationI_CCW)
-
-
-
-function rotationI_CW (e) {
+/*      	    ██╗          ██╗  
+        	    ██║          ╚██╗ 
+        	    ██║    █████╗ ╚██╗
+        	    ██║    ╚════╝ ██╔╝
+        	    ██║          ██╔╝ 
+        	    ╚═╝          ╚═╝  */
+function rotation_I_CW (e) {
 
 	if (e.key === "x" && rndNum == 1) {
 
@@ -648,21 +587,133 @@ function rotationI_CW (e) {
 	// 2. i 3. se vrte u krug
 	// nema centra
 }
-addEventListener("keydown", rotationI_CW)
+addEventListener("keydown", rotation_I_CW)
 
 
 
+
+
+
+/*██╗          ██╗
+ ██╔╝          ██║
+██╔╝ █████╗    ██║
+╚██╗ ╚════╝    ██║
+ ╚██╗          ██║
+  ╚═╝          ╚═╝*/
+function rotation_I_CCW (e) {
+
+	if (e.key === "z" && rndNum == 1) {
+
+		if (currentTetRotState === 0){
+			clearClass("monomino")
+
+			console.log("differencePosition:", calcDifferencePosition())
+
+			let differencePosition = sideKickOff_I(calcDifferencePosition())
+
+			console.log("differencePosition:", differencePosition)
+
+			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
+			tetraminoPosition = [...tetraminoStartingPosition[rndNum][3]].map(v =>  // [0] konst za rotaciju na dole
+				(typeof v) === 'number' ? 
+				v + differencePosition : String(v - -differencePosition))
+
+			addClass("monomino")
+			currentTetRotState = 3
+
+		} else if (currentTetRotState === 3){
+			clearClass("monomino")
+
+			console.log("differencePosition:", calcDifferencePosition())
+
+			let differencePosition = sideKickOff_I(calcDifferencePosition())
+
+			console.log("differencePosition:", differencePosition)
+
+			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
+			tetraminoPosition = [...tetraminoStartingPosition[rndNum][2]].map(v => // [0] konst za rotaciju na dole
+				(typeof v) === 'number' ? 
+				v + differencePosition : String(v - -differencePosition)
+			)
+
+			addClass("monomino")
+			currentTetRotState = 2
+
+		} else if (currentTetRotState === 2){
+			clearClass("monomino")
+
+			console.log("differencePosition:", calcDifferencePosition())
+
+			let differencePosition = sideKickOff_I(calcDifferencePosition())
+
+			console.log("differencePosition:", differencePosition)
+
+			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
+			tetraminoPosition = [...tetraminoStartingPosition[rndNum][1]].map(v => // [0] konst za rotaciju na dole
+				(typeof v) === 'number' ? 
+				v + differencePosition : String(v - -differencePosition)
+			)
+
+			addClass("monomino")
+			currentTetRotState = 1
+
+		} else if (currentTetRotState === 1){
+			clearClass("monomino")
+
+			console.log("differencePosition:", calcDifferencePosition())
+
+			let differencePosition = sideKickOff_I(calcDifferencePosition())
+
+			console.log("differencePosition:", differencePosition)
+
+			// nova pozcija rotirane tetramine koja je uvecana/smanjna za razliku
+			tetraminoPosition = [...tetraminoStartingPosition[rndNum][0]].map(v => // [0] konst za rotaciju na dole
+				(typeof v) === 'number' ? 
+				v + differencePosition : String(v - -differencePosition)
+			)
+
+			addClass("monomino")
+			currentTetRotState = 0
+
+		}
+
+	}
+	// 1. i poslednji se krecu kao konj u sahu
+	// 2. i 3. se vrte u krug
+	// nema centra
+}
+addEventListener("keydown", rotation_I_CCW)
+
+
+/*
+███╗   ██╗███████╗██╗  ██╗████████╗
+████╗  ██║██╔════╝╚██╗██╔╝╚══██╔══╝
+██╔██╗ ██║█████╗   ╚███╔╝    ██║   
+██║╚██╗██║██╔══╝   ██╔██╗    ██║   
+██║ ╚████║███████╗██╔╝ ██╗   ██║   
+╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝   ╚═╝   
+ */
+function nextTetromino (e) {
+
+	if (e.key === " ") {
+
+		clearClass("monomino")
+		rndNum = rnd(7)
+		tetraminoPosition = tetraminoStartingPosition[rndNum][0]
+		currentTetRotState	= 0
+		addClass("monomino")
+
+	}
+
+}
+addEventListener("keydown", nextTetromino)
 
 /* TO DO:
-	
+	- add event [spc] => nextTetramino()
 
-	Rotacija kao u tetrisu, sa 3 dugmeta
-	[z] rotate CCW
-	[up] rot CW
-	[x] rot 180deg
+	- Filing the board
 
-	[state] = [up, right, down, left] = [0,1,2,3]
-	[z] => next state => fn za nxt state 
+	- fn clearLine()
 */
 
-// git commit -l "Zavrseno kretanje i rotiranje sa Side kick-off"
+// git commit -m "added event [spc] => nextTetramino()"
