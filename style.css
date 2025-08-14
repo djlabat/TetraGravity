@@ -27,6 +27,10 @@ body {
 	width:70px;
 }
 
-.monomino {
-	background-color: gray;
+.ghost { /*preimenovati u "ghost" */
+	border: 10px solid rgba(255,255,255, 0.3);
+}
+
+.droped {
+	background-color: green;
 }
