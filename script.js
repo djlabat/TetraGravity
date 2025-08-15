@@ -91,9 +91,9 @@ const tetraminoStartingPosition =
 	]
 ]
 
+
 const container = document. querySelector(".container")
 const boxes = [...document. querySelectorAll(".box")]
-
 const row0 = [...document.querySelectorAll(".row0")]
 const row1 = [...document.querySelectorAll(".row1")]
 const row2 = [...document.querySelectorAll(".row2")]
@@ -105,6 +105,14 @@ const col1 = [...document.querySelectorAll(".col1")]
 const col2 = [...document.querySelectorAll(".col2")]
 const col3 = [...document.querySelectorAll(".col3")]
 const col4 = [...document.querySelectorAll(".col4")]
+
+const boxes2 = [
+	...col0.reverse(), 
+	...col1.reverse(), 
+	...col2.reverse(), 
+	...col3.reverse(), 
+	...col4.reverse()
+]
 
 const rows = [[...row0], [...row1], [...row2], [...row3], [...row4]]
 const cols = [[...col0], [...col1], [...col2], [...col3], [...col4]]
@@ -159,7 +167,6 @@ function changePosition (num) {
 		tetraminoPosition[i] = String(tetraminoPosition[i] -= -num )
 	}
 	differencePosition += num
-	console.log(tetraminoPosition)
 }
 
 // diferncijal TRENUTNOG i POCETNOG tetsa[0], bez rotacije
@@ -226,110 +233,47 @@ function rotateToState (nextState, diffPos) {
 }
 
 
+////////////////////////////////
+//          GRAVITY           //
+////////////////////////////////
 
+let gravity = "left"
 
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-//                               TEST AREA                                 //
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-let res = undefined
-const $_tetraminoStartingPosition = 
-[ // pocetne pozicije tetsa
-	[	
-		[ 6, 7, 
-		 11,12] // O0
-	],[ 
-		[5,6,7,8], // I0
-		
-		[2,7,12,17],	// I1
-
-		[10,11,12,13], // I2
-
-		[1,6,11,16],	// I3
-	],[ 
-		[ 6 , 7,'8',
-		'11',12,13], // Z0
-
-		['7',  8,
-		 12 , 13,
-		 17 ,'18'],	 // Z1
-
-		[11 ,12,'13',
-		'16',17, 18], // Z2
-
-		['6',  7,
-		 11 , 12,
-		 16 ,'17'],	 // Z3
-	],[	
-		['6', 7, '8',
-		 11 ,12, 13], // T0
-
-		[ 7, '8',
-		 12, 13 , 
-		 17,'18'], // T1
-
-		 [11 ,12, 13,
-		 '16',17,'18'], // T2
-
-		['6', 7,
-		 11 ,12, 
-		'16',17] // T3
-	],[
-		['6', 7 ,  8,
-		 11 ,12 ,'13'], // S0
-
-		[ 7 , '8',
-		 12 , 13 ,
-		'17', 18], // S1
-
-		['11', 12 , 13,
-		  16 , 17 ,'18'], // S2
-
-		[ 6 , '7',
-		 11 , 12 ,
-		'16', 17] // S3
-	],[	
-		['6','7', 8,
-		 11, 12, 13], // L0
-
-		[ 7, '8',
-		 12,'13',
-		 17, 18], // L1
-
-		[11, 12,  13,
-		 16,'17','18'], // L2
-
-		[ 6 , 7,
-		'11',12,
-		'16',17] // L3
-
-	],[	
-		[ 6,'7','8',
-		 11, 12,13], // J0
-
-		[ 7,  8,
-		 12,'13',
-		 17,'18'], // J1
-
-		[ 11 , 12 ,13,
-		 '16','17',18], // J2
-
-		['6', 7,
-		'11',12,
-		 16 ,17], // J3
-	]
-]
-
-function areArraysEqualJSON() {
-  res = ( JSON.stringify(tetraminoStartingPosition) === JSON.stringify($_tetraminoStartingPosition) )
-  console.log("res: ", res)	
+function gravityUp (e) {
+	if (e.key == 'w') {
+		gravity = 'up'
+		console.log("▲▲▲ GRAVITY ▲▲▲")
+	};
 }
-addEventListener("keydown", areArraysEqualJSON)
+addEventListener("keydown", gravityUp)
+
+function gravityRight (e) {
+	if (e.key == 'd') {
+		gravity = 'right'
+		console.log("►►► GRAVITY ►►►")
+	};
+}
+addEventListener("keydown", gravityRight)
+
+function gravityDown (e) {
+	if (e.key == 's') {
+		gravity = 'down'
+		console.log("▼▼▼ GRAVITY ▼▼▼")
+	}; 
+} 
+addEventListener("keydown", gravityDown)
+
+function gravityLeft (e) {
+	if (e.key == 'a') {
+		gravity = 'left'
+		console.log("◄◄◄ GRAVITY ◄◄◄")
+	}; 
+}
+addEventListener("keydown", gravityLeft)
+
+
+
+
 
 
 /*
@@ -346,7 +290,6 @@ if (e.key === "ArrowDown" && tetraminoPosition.at(-1) < (boradWidth*boardHight -
 		clearClass("ghost")
 		changePosition(boradWidth)
 		addClass("ghost")
-		console.log("differencePosition:", differencePosition)
 	}
 })
 
@@ -356,7 +299,6 @@ addEventListener("keydown", (e) => {
 		clearClass("ghost")
 		changePosition(-boradWidth)
 		addClass("ghost")
-		console.log("differencePosition:", differencePosition)
 	}
 })
 
@@ -366,7 +308,6 @@ addEventListener("keydown", (e) => {
 		clearClass("ghost")
 		changePosition(-1)
 		addClass("ghost")
-		console.log("differencePosition:", differencePosition)
 	}
 })
 
@@ -376,7 +317,6 @@ addEventListener("keydown", (e) => {
 		clearClass("ghost")
 		changePosition(1)
 		addClass("ghost")
-		console.log("differencePosition:", differencePosition)
 	}
 })
 
@@ -408,7 +348,6 @@ function rotation_LST_CW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(1, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 1
@@ -417,7 +356,6 @@ function rotation_LST_CW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(2, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 2
@@ -426,7 +364,6 @@ function rotation_LST_CW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(3, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 3
@@ -435,7 +372,6 @@ function rotation_LST_CW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(0, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 0
@@ -464,7 +400,6 @@ function rotation_LST_CCW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(3, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 3
@@ -473,7 +408,6 @@ function rotation_LST_CCW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(2, differencePosition)	
 			addClass("ghost")
 			currentTetRotState = 2
@@ -482,7 +416,6 @@ function rotation_LST_CCW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(1, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 1
@@ -491,7 +424,6 @@ function rotation_LST_CCW (e) {
 			clearClass("ghost")
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_LST(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(0, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 0
@@ -519,40 +451,32 @@ function rotation_I_CW (e) {
 
 		if (currentTetRotState === 0){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(1, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 1
 
 		} else if (currentTetRotState === 1){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(2, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 2
 
 		} else if (currentTetRotState === 2){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(3, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 3
 
 		} else if (currentTetRotState === 3){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(0, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 0
@@ -581,40 +505,32 @@ function rotation_I_CCW (e) {
 
 		if (currentTetRotState === 0){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(3, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 3
 
 		} else if (currentTetRotState === 3){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(2, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 2
 
 		} else if (currentTetRotState === 2){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(1, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 1
 
 		} else if (currentTetRotState === 1){
 			clearClass("ghost")
-			console.log("differencePosition:", calcDifferencePosition())
 			differencePosition = calcDifferencePosition()
 			differencePosition = sideKickOff_I(differencePosition)
-			console.log("differencePosition:", differencePosition)
 			rotateToState(0, differencePosition)
 			addClass("ghost")
 			currentTetRotState = 0
@@ -645,7 +561,6 @@ function nextTet (e) {
 		currentTetRotState	= 0
 		differencePosition = 0
 		addClass("ghost")
-		console.log("differencePosition:", differencePosition)
 		clearLine()
 	}
 
@@ -675,31 +590,36 @@ function clearLine () {
 		for (let r of rowsFilled) {
 			r.forEach(bx => bx.classList.remove("droped"))
 		}
-		for (let c of colsFilled) (
+		for (let c of colsFilled) {
 			c.forEach(bx => bx.classList.remove("droped"))
-		)
+		}
+		
 
 	// ROW clear
-  	} else if (rowsFilled) {
+  	} else if (rowsFilled) { 
 
    		// remove Class Droped from `rowsFilled`
-		for (let r of rowsFilled) (
+		for (let r of rowsFilled) {
 			r.forEach(bx => bx.classList.remove("droped"))
-		)
+		}
 
-		// A SVI REDOVI IZNAD IDU DOLE
-		
+		//  REDOVI IZNAD (ISPOD) IDU DOLE (GORE)
 		for (let i=0; i<rowsFilled.length; i++) { 
 			// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
-		  	const fallAreaLimit = boxes.indexOf(rowsFilled[i][0])
-			const dropsInFallArea = boxes.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped"))
+		  	const fallAreaLimit = 
+		  		gravity == "down" ? boxes.indexOf(rowsFilled[i][0]) : // 15
+ 				gravity == "up"   ? boxes.indexOf(rowsFilled.at(-1).at(-1)) : "Error: fallAreaLimit"
+
+			const dropsInFallArea = 
+				gravity == "down" ? boxes.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped")) :
+				gravity ==   "up" ? boxes.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "Error: dropsInFallArea"
 			
 			// popise [rednih brojeva] droped boxova iznad obrisane linije
-			let indexOfFallingDrops = []
+			let indexOfFellDrops = [] 
 
 			for (let d of dropsInFallArea) {
-			  indexOfFallingDrops.push(boxes.indexOf(d))
-			}
+			  indexOfFellDrops.push(boxes.indexOf(d))
+			} // [8, 10, 11, 13, 14]
 
 			// remove class `droped` from fallArea
 			for (let d of dropsInFallArea) {
@@ -707,93 +627,88 @@ function clearLine () {
 			}
 			
 			// [redne brojeve povecam za 5]
-			indexOfFallingDrops = indexOfFallingDrops.map(b => b+5)
+			indexOfFellDrops = indexOfFellDrops.map(b => 
+				gravity == 'up' ? b-5 :
+				gravity == 'down' ? b+5 : "Error: indexOfFellDrops"
+			) // [13, 15, 16, 18, 19]
 			
 			// obojim boxove sa novim [rednim brojevima]
-			for (let idDropa of indexOfFallingDrops) {
+			for (let idDropa of indexOfFellDrops) {
 				boxes[idDropa].classList.add("droped")
 			}
+
 		}
-  	// Ako je vise redova od jednom za ciscenje
-  	// krenemm od najviseg reda: obrisem 1. liniju, spustim boxove iznad
-  	// pa ponovim proceduru za redove ispod.
 
+	} else if (colsFilled) { console.log("colsFilled:", colsFilled)
 
-
-
-
-
-	    if (gravity = "down") {
-	    	//boxovi iznad linije Position +5 
-	    	// svi boxovi kojima je index iz boxes < od filledRows[0][0]
-	    	// 
-	    }
-	    // if (G up) boxovi ispod linije Pos -5 
-	    // if (G left) boxovi desno od linije Pos -1
-	    // if (G right) boxovi left od linije Pos +1 
-
-  } else if (colsFilled) {
-
-  		// removeClassDroped
-		for (let c of colsFilled) (
+		// removeClassDroped
+		for (let c of colsFilled) {
 			c.forEach(bx => bx.classList.remove("droped"))
-		)
+		}
 
-  } else {
-  		console.log("do nothing")
-    // [boxova koji su za clear line]
-  }
-}
+		// KOLONE IDU LEVO (DESNO)
+		debugger
+		for (let i=0; i<colsFilled.length; i++) { 
+		  	// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
+		  	const fallAreaLimit = 
+		  		gravity == "right" ? boxes2.indexOf(colsFilled.at(i).at(0)) : // 15
+ 				gravity == "left"  ? boxes2.indexOf(colsFilled.at(-1).at(-1)) : "Error: fallAreaLimit"
+			const dropsInFallArea = 
+				gravity == "right" ? boxes2.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped")) :
+				gravity ==  "left" ? boxes2.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "Error: dropsInFallArea"
+console.log("fallAreaLimit:", fallAreaLimit)			
+console.log("dropsInFallArea:", dropsInFallArea)
+			// popise [rednih brojeva] droped boxova iznad obrisane linije
+			let indexOfFellDrops = [] 
 
+			for (let d of dropsInFallArea) {
+			  indexOfFellDrops.push(boxes2.indexOf(d))
+			} // [8, 10, 11, 13, 14]
 
+			// remove class `droped` from fallArea
+			for (let d of dropsInFallArea) {
+			  d.classList.remove("droped")
+			}
+			
+			// [redne brojeve povecam za 5]
+			indexOfFellDrops = indexOfFellDrops.map(b => 
+				gravity == 'left' ? b-5 :
+				gravity == 'right' ? b+5 : "Error: indexOfFellDrops"
+			) // [13, 15, 16, 18, 19]
+			
+			// obojim boxove sa novim [rednim brojevima]
+			for (let idDropa of indexOfFellDrops) {
+				boxes2[idDropa].classList.add("droped")
+			}
 
+		}
+		
 
-
-
-////////////////////////////////
-//          GRAVITY           //
-////////////////////////////////
-
-let gravity = "down"
-
-function gravityUp (e) {
-	if (e.key == 'w') {
-		gravity = 'up'
+	} else {
+			console.log("do nothing")
+	// [boxova koji su za clear line]
 	}
 }
-addEventListener("keydown", gravityUp)
 
-function gravityRight (e) {
-	if (e.key == 'd') {
-		gravity = 'right'
-	}
-}
-addEventListener("keydown", gravityRight)
 
-function gravityDown (e) {
-	if (e.key == 's') {
-		gravity = 'down'
-	}
-} 
-addEventListener("keydown", gravityDown)
 
-function gravityLeft (e) {
-	if (e.key == 'a') {
-		gravity = 'left'
-	}
-}
-addEventListener("keydown", gravityLeft)
+
+
+
 
 
 
 
 /* TO DO:
-BUG Brisanje vise linija od jednom radi ako brisanje jedne linije
-
 Dodati gravitaciju.
+boxes2 je html colection
+a boxes nije
+To je problem
 
 
 */
 
 // git commit -m "Prodisao mikro Tetris! Radi samo normal Clearline sa gravity na dole."
 // git branch develop
+// vratim se na roditeljsku granu master i odatle pozovem `git merge develop`.
+// Pre toga za svaki slucaj uraditi COPY-BCKUP
