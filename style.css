@@ -17,7 +17,7 @@ body {
 	border: 16px solid #222;
 }
 
-.cell { background-color: #111;
+.box { background-color: #111;
 	padding: 25px;
 	color: #888;
 	border-radius: 5px;
@@ -32,5 +32,5 @@ body {
 }
 
 .droped {
-	background-color: green;
+	background-color: rgb(0,63,0);
 }

@@ -92,7 +92,22 @@ const tetraminoStartingPosition =
 ]
 
 const container = document. querySelector(".container")
-const cells = document. querySelectorAll(".cell")
+const boxes = [...document. querySelectorAll(".box")]
+
+const row0 = [...document.querySelectorAll(".row0")]
+const row1 = [...document.querySelectorAll(".row1")]
+const row2 = [...document.querySelectorAll(".row2")]
+const row3 = [...document.querySelectorAll(".row3")]
+const row4 = [...document.querySelectorAll(".row4")]
+
+const col0 = [...document.querySelectorAll(".col0")]
+const col1 = [...document.querySelectorAll(".col1")]
+const col2 = [...document.querySelectorAll(".col2")]
+const col3 = [...document.querySelectorAll(".col3")]
+const col4 = [...document.querySelectorAll(".col4")]
+
+const rows = [[...row0], [...row1], [...row2], [...row3], [...row4]]
+const cols = [[...col0], [...col1], [...col2], [...col3], [...col4]]
 
 const boradWidth = 5
 const boardHight = 5
@@ -110,7 +125,7 @@ let currentTetRotState = 0 // it can be 0, 1, 2, 3 => up, right, down, left
 // Dodavanje klase .ghost na svaki box od Tetromine
 for (let t of tetraminoPosition) {
 	if (typeof t === "number") {
-		cells[t].classList.add("ghost") // add .ghost
+		boxes[t].classList.add("ghost") // add .ghost
 	}
 }
 
@@ -122,16 +137,17 @@ for (let t of tetraminoPosition) {
 ██║   ██║   ██║   ██║██║     ╚════██║
 ╚██████╔╝   ██║   ██║███████╗███████║
  ╚═════╝    ╚═╝   ╚═╝╚══════╝╚══════╝
+ font je sa adrese http://patorjk.com/software/taag/#p=display&h=0&v=0&f=ANSI%20Shadow&t=next
  */
 function rnd (n) {return Math.floor(Math.random()*n)}
 function clearClass (clas) {
-	for (let t of tetraminoPosition) cells[t].classList.remove(clas)
+	for (let t of tetraminoPosition) boxes[t].classList.remove(clas)
 }
 
 function addClass (clas) {
 	for (let t of tetraminoPosition) {
 		if (typeof t === "number") {
-			cells[t].classList.add(clas)
+			boxes[t].classList.add(clas)
 		}
 	}	
 }
@@ -208,6 +224,9 @@ function rotateToState (nextState, diffPos) {
 		String(v - -diffPos)
 	)	
 }
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -627,31 +646,154 @@ function nextTet (e) {
 		differencePosition = 0
 		addClass("ghost")
 		console.log("differencePosition:", differencePosition)
+		clearLine()
 	}
 
 }
 addEventListener("keydown", nextTet)
 
+function clearLine () { 
+
+	// FIND DROPED BOXES
+	let rowsFilled = rows.filter(r => // [ [(5)], [(5)] ] dve linije za brisanje
+						r.every(bx => 
+						bx.classList.contains("droped") )  )
+	if (rowsFilled.length == 0) rowsFilled = ''
+
+	let colsFilled = cols.filter(c =>
+						c.every(bx => 
+						bx.classList.contains("droped") )  )
+  	if (colsFilled.length == 0) colsFilled = ''
 
 
+
+  // RASKRSNICA
+  	// CROSS clear
+  	if (rowsFilled && colsFilled) {
+
+  		// removeClassDroped
+		for (let r of rowsFilled) {
+			r.forEach(bx => bx.classList.remove("droped"))
+		}
+		for (let c of colsFilled) (
+			c.forEach(bx => bx.classList.remove("droped"))
+		)
+
+	// ROW clear
+  	} else if (rowsFilled) {
+
+   		// remove Class Droped from `rowsFilled`
+		for (let r of rowsFilled) (
+			r.forEach(bx => bx.classList.remove("droped"))
+		)
+
+		// A SVI REDOVI IZNAD IDU DOLE
+		
+		for (let i=0; i<rowsFilled.length; i++) { 
+			// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
+		  	const fallAreaLimit = boxes.indexOf(rowsFilled[i][0])
+			const dropsInFallArea = boxes.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped"))
+			
+			// popise [rednih brojeva] droped boxova iznad obrisane linije
+			let indexOfFallingDrops = []
+
+			for (let d of dropsInFallArea) {
+			  indexOfFallingDrops.push(boxes.indexOf(d))
+			}
+
+			// remove class `droped` from fallArea
+			for (let d of dropsInFallArea) {
+			  d.classList.remove("droped")
+			}
+			
+			// [redne brojeve povecam za 5]
+			indexOfFallingDrops = indexOfFallingDrops.map(b => b+5)
+			
+			// obojim boxove sa novim [rednim brojevima]
+			for (let idDropa of indexOfFallingDrops) {
+				boxes[idDropa].classList.add("droped")
+			}
+		}
+  	// Ako je vise redova od jednom za ciscenje
+  	// krenemm od najviseg reda: obrisem 1. liniju, spustim boxove iznad
+  	// pa ponovim proceduru za redove ispod.
+
+
+
+
+
+
+	    if (gravity = "down") {
+	    	//boxovi iznad linije Position +5 
+	    	// svi boxovi kojima je index iz boxes < od filledRows[0][0]
+	    	// 
+	    }
+	    // if (G up) boxovi ispod linije Pos -5 
+	    // if (G left) boxovi desno od linije Pos -1
+	    // if (G right) boxovi left od linije Pos +1 
+
+  } else if (colsFilled) {
+
+  		// removeClassDroped
+		for (let c of colsFilled) (
+			c.forEach(bx => bx.classList.remove("droped"))
+		)
+
+  } else {
+  		console.log("do nothing")
+    // [boxova koji su za clear line]
+  }
+}
+
+
+
+
+
+
+////////////////////////////////
+//          GRAVITY           //
+////////////////////////////////
+
+let gravity = "down"
+
+function gravityUp (e) {
+	if (e.key == 'w') {
+		gravity = 'up'
+	}
+}
+addEventListener("keydown", gravityUp)
+
+function gravityRight (e) {
+	if (e.key == 'd') {
+		gravity = 'right'
+	}
+}
+addEventListener("keydown", gravityRight)
+
+function gravityDown (e) {
+	if (e.key == 's') {
+		gravity = 'down'
+	}
+} 
+addEventListener("keydown", gravityDown)
+
+function gravityLeft (e) {
+	if (e.key == 'a') {
+		gravity = 'left'
+	}
+}
+addEventListener("keydown", gravityLeft)
 
 
 
 
 /* TO DO:
-BUG kada se okrece box sa klasom .ghost na ivici (kick-off) 
-gde je postaavljena klasa .droped poremeti se diferencijal i
-ghost iskace iz borda.
+BUG Brisanje vise linija od jednom radi ako brisanje jedne linije
 
-	- add event [spc] => nextTetramino()
-		=> Drop on board class .droped
-			[. . . . .
-			 . . . . .
-			 . . x . .
-			 . . x x .
-			 . x x x x]
-boxovima koji su na tetPozicijama addovati klasu .droped
-	- fn clearLine()
+Dodati gravitaciju.
+
+
 */
 
-// git commit -m "Poravljen BUG. Problem je bio 'Deep Clone'"
+// git commit -m "Prodisao mikro Tetris! Radi samo normal Clearline sa gravity na dole."
+// git branch develop
