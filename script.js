@@ -117,6 +117,8 @@ const boxes2 = [
 const rows = [[...row0], [...row1], [...row2], [...row3], [...row4]]
 const cols = [[...col0], [...col1], [...col2], [...col3], [...col4]]
 
+const gravityTag = document.querySelector(".gravity")
+
 const boradWidth = 5
 const boardHight = 5
 
@@ -237,12 +239,12 @@ function rotateToState (nextState, diffPos) {
 //          GRAVITY           //
 ////////////////////////////////
 
-let gravity = "left"
+let gravity = "down"
 
 function gravityUp (e) {
 	if (e.key == 'w') {
 		gravity = 'up'
-		console.log("▲▲▲ GRAVITY ▲▲▲")
+		gravityTag.innerHTML = "▲▲▲ GRAVITY ▲▲▲"
 	};
 }
 addEventListener("keydown", gravityUp)
@@ -250,7 +252,7 @@ addEventListener("keydown", gravityUp)
 function gravityRight (e) {
 	if (e.key == 'd') {
 		gravity = 'right'
-		console.log("►►► GRAVITY ►►►")
+		gravityTag.innerHTML = "    GRAVITY ►►►|"
 	};
 }
 addEventListener("keydown", gravityRight)
@@ -258,7 +260,7 @@ addEventListener("keydown", gravityRight)
 function gravityDown (e) {
 	if (e.key == 's') {
 		gravity = 'down'
-		console.log("▼▼▼ GRAVITY ▼▼▼")
+		gravityTag.innerHTML = "_▼▼▼_GRAVITY_▼▼▼_"
 	}; 
 } 
 addEventListener("keydown", gravityDown)
@@ -266,7 +268,7 @@ addEventListener("keydown", gravityDown)
 function gravityLeft (e) {
 	if (e.key == 'a') {
 		gravity = 'left'
-		console.log("◄◄◄ GRAVITY ◄◄◄")
+		gravityTag.innerHTML = "|◄◄◄ GRAVITY"
 	}; 
 }
 addEventListener("keydown", gravityLeft)
@@ -608,7 +610,7 @@ function clearLine () {
 			// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
 		  	const fallAreaLimit = 
 		  		gravity == "down" ? boxes.indexOf(rowsFilled[i][0]) : // 15
- 				gravity == "up"   ? boxes.indexOf(rowsFilled.at(-1).at(-1)) : "Error: fallAreaLimit"
+ 				gravity == "up"   ? boxes.indexOf(rowsFilled.at(-1-i).at(-1)) : "Error: fallAreaLimit"
 
 			const dropsInFallArea = 
 				gravity == "down" ? boxes.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped")) :
@@ -647,12 +649,12 @@ function clearLine () {
 		}
 
 		// KOLONE IDU LEVO (DESNO)
-		debugger
+		
 		for (let i=0; i<colsFilled.length; i++) { 
 		  	// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
 		  	const fallAreaLimit = 
 		  		gravity == "right" ? boxes2.indexOf(colsFilled.at(i).at(0)) : // 15
- 				gravity == "left"  ? boxes2.indexOf(colsFilled.at(-1).at(-1)) : "Error: fallAreaLimit"
+ 				gravity == "left"  ? boxes2.indexOf(colsFilled.at(-1-i).at(-1)) : "Error: fallAreaLimit"
 			const dropsInFallArea = 
 				gravity == "right" ? boxes2.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped")) :
 				gravity ==  "left" ? boxes2.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "Error: dropsInFallArea"
@@ -708,7 +710,7 @@ To je problem
 
 */
 
-// git commit -m "Prodisao mikro Tetris! Radi samo normal Clearline sa gravity na dole."
+// git commit -m "Gotove su gravitacije."
 // git branch develop
 // vratim se na roditeljsku granu master i odatle pozovem `git merge develop`.
 // Pre toga za svaki slucaj uraditi COPY-BCKUP
