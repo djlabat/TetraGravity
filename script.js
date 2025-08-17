@@ -90,7 +90,20 @@ const tetraminoStartingPosition =
 		 16 ,17], // J3
 	]
 ]
-
+// zamrznuti sa for -> Object.freez(tetraminoStartingPosition)
+const tetsOredred = ["██","▄▄▄▄","▀█▄","▄█▄","▄█▀","▄▄█","█▄▄"]
+let tets = ["██","▄▄▄▄","▀█▄","▄█▄","▄█▀","▄▄█","█▄▄"]
+let _tets = [...shakeBag(tets)] // unvisiable tets
+shakeBag(tets)
+tets.length = 6
+const tBag = document.querySelector("#tetris-bag")
+tBag.innerHTML = `\
+<div class="next-tet">${tets[1]}</div>
+<div class="next-tet">${tets[2]}</div>
+<div class="next-tet">${tets[3]}</div>
+<div class="next-tet">${tets[4]}</div>
+<div class="next-tet">${tets[5]}</div>`
+const hold = []
 
 const container = document. querySelector(".container")
 const boxes = [...document. querySelectorAll(".box")]
@@ -117,19 +130,15 @@ const boxes2 = [
 const rows = [[...row0], [...row1], [...row2], [...row3], [...row4]]
 const cols = [[...col0], [...col1], [...col2], [...col3], [...col4]]
 
-const gravityTag = document.querySelector(".gravity")
-
 const boradWidth = 5
 const boardHight = 5
 
-let rndNum = rnd(7)
+let indexOfghost = getIndefOfGhost()
 
-// ovo je startna pozicija koja ce se menjati pomeranjem ili rotiranjem
-let tetraminoPosition = [... [...tetraminoStartingPosition[rndNum]] [0]]
+// Pozicija tetramina
+let tetraminoPosition = [... [...tetraminoStartingPosition[indexOfghost]] [0]]
 let differencePosition = 0
-let currentTetRotState = 0 // it can be 0, 1, 2, 3 => up, right, down, left 
-
-
+let currentTetRotState = 0 // it can be 0, 1, 2, 3 witch means: up, right, down, left 
 
 
 // Dodavanje klase .ghost na svaki box od Tetromine
@@ -149,7 +158,8 @@ for (let t of tetraminoPosition) {
  ╚═════╝    ╚═╝   ╚═╝╚══════╝╚══════╝
  font je sa adrese http://patorjk.com/software/taag/#p=display&h=0&v=0&f=ANSI%20Shadow&t=next
  */
-function rnd (n) {return Math.floor(Math.random()*n)}
+
+function getIndefOfGhost () {return tetsOredred.indexOf(tets[0])}
 function clearClass (clas) {
 	for (let t of tetraminoPosition) boxes[t].classList.remove(clas)
 }
@@ -173,7 +183,7 @@ function changePosition (num) {
 
 // diferncijal TRENUTNOG i POCETNOG tetsa[0], bez rotacije
 function calcDifferencePosition () {
-	let res = tetraminoPosition[0] - tetraminoStartingPosition[rndNum][currentTetRotState][0]
+	let res = tetraminoPosition[0] - tetraminoStartingPosition[indexOfghost][currentTetRotState][0]
 	return res
 }
 
@@ -227,7 +237,7 @@ function sideKickOff_I (diff) {
 
 // rotiranje tetramine uz promenu pozcije
 function rotateToState (nextState, diffPos) {
-	tetraminoPosition = [... [...tetraminoStartingPosition[rndNum]] [nextState]].map(v => 
+	tetraminoPosition = [... [...tetraminoStartingPosition[indexOfghost]] [nextState]].map(v => 
 		(typeof v) === 'number' ? 
 		v + diffPos : 
 		String(v - -diffPos)
@@ -244,7 +254,8 @@ let gravity = "down"
 function gravityUp (e) {
 	if (e.key == 'w') {
 		gravity = 'up'
-		gravityTag.innerHTML = "▲▲▲ GRAVITY ▲▲▲"
+		container.style.border = "16px solid #222"
+		container.style.borderTop = "16px solid blue"
 	};
 }
 addEventListener("keydown", gravityUp)
@@ -252,7 +263,8 @@ addEventListener("keydown", gravityUp)
 function gravityRight (e) {
 	if (e.key == 'd') {
 		gravity = 'right'
-		gravityTag.innerHTML = "    GRAVITY ►►►|"
+		container.style.border = "16px solid #222"
+		container.style.borderRight = "16px solid red"
 	};
 }
 addEventListener("keydown", gravityRight)
@@ -260,7 +272,8 @@ addEventListener("keydown", gravityRight)
 function gravityDown (e) {
 	if (e.key == 's') {
 		gravity = 'down'
-		gravityTag.innerHTML = "_▼▼▼_GRAVITY_▼▼▼_"
+		container.style.border = "16px solid #222"
+		container.style.borderBottom = "16px solid yellow"
 	}; 
 } 
 addEventListener("keydown", gravityDown)
@@ -268,7 +281,8 @@ addEventListener("keydown", gravityDown)
 function gravityLeft (e) {
 	if (e.key == 'a') {
 		gravity = 'left'
-		gravityTag.innerHTML = "|◄◄◄ GRAVITY"
+		container.style.border = "16px solid #222"
+		container.style.borderLeft = "16px solid green"
 	}; 
 }
 addEventListener("keydown", gravityLeft)
@@ -342,9 +356,9 @@ addEventListener("keydown", (e) => {
             ██║     ╚════██║   ██║       ╚════╝ ██╔╝
             ███████╗███████║   ██║             ██╔╝ 
             ╚══════╝╚══════╝   ╚═╝             ╚═╝  */
-function rotation_LST_CW (e) {
+function rotation_LST_CW (e) { 
 
-	if (e.key === "x" && rndNum !== 0 && rndNum !==1) { 
+	if (e.key === "x" && indexOfghost !== 0 && indexOfghost !==1) { 
 
 		if (currentTetRotState === 0){
 			clearClass("ghost")
@@ -396,7 +410,7 @@ addEventListener("keydown", rotation_LST_CW)
   ╚═╝          ╚══════╝╚══════╝   ╚═╝   */
 function rotation_LST_CCW (e) { 
 
-	if (e.key === "z" && rndNum !== 0 && rndNum !==1) {
+	if (e.key === "z" && indexOfghost !== 0 && indexOfghost !==1) {
 
 		if (currentTetRotState === 0){
 			clearClass("ghost")
@@ -449,7 +463,7 @@ addEventListener("keydown", rotation_LST_CCW)
         	    ╚═╝          ╚═╝  */
 function rotation_I_CW (e) {
 
-	if (e.key === "x" && rndNum == 1) {
+	if (e.key === "x" && indexOfghost == 1) {
 
 		if (currentTetRotState === 0){
 			clearClass("ghost")
@@ -503,7 +517,7 @@ addEventListener("keydown", rotation_I_CW)
   ╚═╝          ╚═╝*/
 function rotation_I_CCW (e) {
 
-	if (e.key === "z" && rndNum == 1) {
+	if (e.key === "z" && indexOfghost == 1) {
 
 		if (currentTetRotState === 0){
 			clearClass("ghost")
@@ -553,26 +567,128 @@ addEventListener("keydown", rotation_I_CCW)
 ██║ ╚████║███████╗██╔╝ ██╗   ██║   
 ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝   ╚═╝   
  */
-function nextTet (e) {
+function dropTet (e) { 
 
 	if (e.key === " ") {
 		addClass("droped")
 		clearClass("ghost")
-		rndNum = rnd(7)
-		tetraminoPosition = [... [...tetraminoStartingPosition[rndNum]] [0]]
+		nextTetramino()
+		tetraminoPosition = 
+		tets[0] == "██"   ? [... [...tetraminoStartingPosition[0]] [0]] :
+		tets[0] == "▄▄▄▄" ? [... [...tetraminoStartingPosition[1]] [0]] :
+		tets[0] == "▀█▄"  ? [... [...tetraminoStartingPosition[2]] [0]] :
+		tets[0] == "▄█▄"  ? [... [...tetraminoStartingPosition[3]] [0]] :
+		tets[0] == "▄█▀"  ? [... [...tetraminoStartingPosition[4]] [0]] :
+		tets[0] == "▄▄█"  ? [... [...tetraminoStartingPosition[5]] [0]] :
+		tets[0] == "█▄▄"  ? [... [...tetraminoStartingPosition[6]] [0]] :
+		"Error: tetraminoPosition"
 		currentTetRotState	= 0
 		differencePosition = 0
 		addClass("ghost")
 		clearLine()
+		indexOfghost = getIndefOfGhost()
 	}
 
 }
-addEventListener("keydown", nextTet)
+addEventListener("keydown", dropTet)
 
+
+
+
+
+
+
+
+
+
+/*
+██████╗  █████╗  ██████╗ 
+██╔══██╗██╔══██╗██╔════╝ 
+██████╔╝███████║██║  ███╗
+██╔══██╗██╔══██║██║   ██║
+██████╔╝██║  ██║╚██████╔╝
+╚═════╝ ╚═╝  ╚═╝ ╚═════╝ */
+function nextTetramino () { 
+		tets.shift()
+		tets.push(_tets.shift()) // tets <- _tets
+		tBag.innerHTML = `\
+<div class="next-tet">${tets[1]}</div>
+<div class="next-tet">${tets[2]}</div>
+<div class="next-tet">${tets[3]}</div>
+<div class="next-tet">${tets[4]}</div>
+<div class="next-tet">${tets[5]}</div>`
+		if (_tets.length == 0) {
+			_tets = ["██","▄▄▄▄","▀█▄","▄█▄","▄█▀","▄▄█","█▄▄"]
+			shakeBag(_tets)    
+		}
+}
+
+function shakeBag (bag) {
+	const leng = bag.length
+	for (let i=0; i<leng; i++) {
+		bag[i] = bag.splice(Math.floor(Math.random()*5), 1, bag[i])[0]
+	}
+	return bag
+}
+
+function inHold (e) {
+	if (e.key == "c") {
+		const holdBag = document.querySelector("#hold-bag")
+		
+		hold.push(tets.shift()) // hold <- tets[0]
+
+		if (hold.length > 1) tets.unshift(hold.shift()) // ako hold vec ima nesto, hold[0] -> tets
+			else {tets.push(_tets.shift())} // inace, tets <- _tets
+
+		holdBag.innerHTML = hold
+		tBag.innerHTML = `\
+		<div class="next-tet">${tets[1]}</div>
+		<div class="next-tet">${tets[2]}</div>
+		<div class="next-tet">${tets[3]}</div>
+		<div class="next-tet">${tets[4]}</div>
+		<div class="next-tet">${tets[5]}</div>`
+
+		// ghost se apdejtuje
+		clearClass("ghost")
+		tetraminoPosition = 
+		tets[0] == "██"   ? [... [...tetraminoStartingPosition[0]] [0]] :
+		tets[0] == "▄▄▄▄" ? [... [...tetraminoStartingPosition[1]] [0]] :
+		tets[0] == "▀█▄"  ? [... [...tetraminoStartingPosition[2]] [0]] :
+		tets[0] == "▄█▄"  ? [... [...tetraminoStartingPosition[3]] [0]] :
+		tets[0] == "▄█▀"  ? [... [...tetraminoStartingPosition[4]] [0]] :
+		tets[0] == "▄▄█"  ? [... [...tetraminoStartingPosition[5]] [0]] :
+		tets[0] == "█▄▄"  ? [... [...tetraminoStartingPosition[6]] [0]] :
+		"Error: tetraminoPosition"
+		addClass("ghost")
+
+		// indexOfGhost se apdejtuje
+		indexOfghost = getIndefOfGhost()
+	}
+}
+addEventListener("keydown", inHold)
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+ ██████╗██╗     ███████╗ █████╗ ██████╗ ██╗     ██╗███╗   ██╗███████╗
+██╔════╝██║     ██╔════╝██╔══██╗██╔══██╗██║     ██║████╗  ██║██╔════╝
+██║     ██║     █████╗  ███████║██████╔╝██║     ██║██╔██╗ ██║█████╗  
+██║     ██║     ██╔══╝  ██╔══██║██╔══██╗██║     ██║██║╚██╗██║██╔══╝  
+╚██████╗███████╗███████╗██║  ██║██║  ██║███████╗██║██║ ╚████║███████╗
+ ╚═════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═══╝╚══════╝*/
 function clearLine () { 
 
 	// FIND DROPED BOXES
-	let rowsFilled = rows.filter(r => // [ [(5)], [(5)] ] dve linije za brisanje
+	let rowsFilled = rows.filter(r => // exp. [ [(5)], [(5)] ] dve linije za brisanje
 						r.every(bx => 
 						bx.classList.contains("droped") )  )
 	if (rowsFilled.length == 0) rowsFilled = ''
@@ -602,7 +718,10 @@ function clearLine () {
 
    		// remove Class Droped from `rowsFilled`
 		for (let r of rowsFilled) {
-			r.forEach(bx => bx.classList.remove("droped"))
+			r.forEach((bx) => {
+				// bx.classList.add("fade-out")
+				bx.classList.remove("droped")
+			})
 		}
 
 		//  REDOVI IZNAD (ISPOD) IDU DOLE (GORE)
@@ -610,11 +729,13 @@ function clearLine () {
 			// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
 		  	const fallAreaLimit = 
 		  		gravity == "down" ? boxes.indexOf(rowsFilled[i][0]) : // 15
- 				gravity == "up"   ? boxes.indexOf(rowsFilled.at(-1-i).at(-1)) : "Error: fallAreaLimit"
+ 				gravity == "up"   ? boxes.indexOf(rowsFilled.at(-1-i).at(-1)) : "fallAreaLimit: Gravity is left or right"
+
+ 			if (fallAreaLimit == "fallAreaLimit: Gravity is left or right") break
 
 			const dropsInFallArea = 
 				gravity == "down" ? boxes.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped")) :
-				gravity ==   "up" ? boxes.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "Error: dropsInFallArea"
+				gravity ==   "up" ? boxes.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "dropsInFallArea: Gravity is left or right"
 			
 			// popise [rednih brojeva] droped boxova iznad obrisane linije
 			let indexOfFellDrops = [] 
@@ -635,13 +756,13 @@ function clearLine () {
 			) // [13, 15, 16, 18, 19]
 			
 			// obojim boxove sa novim [rednim brojevima]
-			for (let idDropa of indexOfFellDrops) {
-				boxes[idDropa].classList.add("droped")
+			for (let i of indexOfFellDrops) {
+				boxes[i].classList.add("droped")
 			}
 
 		}
 
-	} else if (colsFilled) { console.log("colsFilled:", colsFilled)
+	} else if (colsFilled) {
 
 		// removeClassDroped
 		for (let c of colsFilled) {
@@ -654,12 +775,14 @@ function clearLine () {
 		  	// nadjem idex boxa koji je isti kao prvi iz rowFilled[0][0]
 		  	const fallAreaLimit = 
 		  		gravity == "right" ? boxes2.indexOf(colsFilled.at(i).at(0)) : // 15
- 				gravity == "left"  ? boxes2.indexOf(colsFilled.at(-1-i).at(-1)) : "Error: fallAreaLimit"
+ 				gravity == "left"  ? boxes2.indexOf(colsFilled.at(-1-i).at(-1)) : "fallAreaLimit: Gravity is up or down"
+
+ 			if (fallAreaLimit == "fallAreaLimit: Gravity is up or down") break
+
 			const dropsInFallArea = 
 				gravity == "right" ? boxes2.slice(0, fallAreaLimit).filter(bx => bx.classList.contains("droped")) :
-				gravity ==  "left" ? boxes2.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "Error: dropsInFallArea"
-console.log("fallAreaLimit:", fallAreaLimit)			
-console.log("dropsInFallArea:", dropsInFallArea)
+				gravity ==  "left" ? boxes2.slice(fallAreaLimit).filter(bx => bx.classList.contains("droped")) : "dropsInFallArea: Gravity is up or down"
+
 			// popise [rednih brojeva] droped boxova iznad obrisane linije
 			let indexOfFellDrops = [] 
 
@@ -682,14 +805,8 @@ console.log("dropsInFallArea:", dropsInFallArea)
 			for (let idDropa of indexOfFellDrops) {
 				boxes2[idDropa].classList.add("droped")
 			}
-
 		}
-		
-
-	} else {
-			console.log("do nothing")
-	// [boxova koji su za clear line]
-	}
+	} 
 }
 
 
@@ -710,7 +827,7 @@ To je problem
 
 */
 
-// git commit -m "Gotove su gravitacije."
+// git commit -m "Dodao sam next i hold. Radi OK."
 // git branch develop
 // vratim se na roditeljsku granu master i odatle pozovem `git merge develop`.
 // Pre toga za svaki slucaj uraditi COPY-BCKUP
