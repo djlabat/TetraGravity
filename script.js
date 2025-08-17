@@ -7,89 +7,91 @@
 const tetraminoStartingPosition = 
 [ // pocetne pozicije tetsa
 	[	
-		[ 6, 7, 
-		 11,12] // O0
+		[ 11 , 12 , 
+		  16 , 17 ] // O0
 	],[ 
-		[5,6,7,8], // I0
+		[ 10 , 11 , 12 , 13 ], // I0
 		
-		[2,7,12,17],	// I1
+		[  7 , 12 , 17 , 22 ],	// I1
 
-		[10,11,12,13], // I2
+		[ 15 , 16 , 17 , 18 ], // I2
 
-		[1,6,11,16],	// I3
+		[  6 , 11 , 16 , 21 ],	// I3
 	],[ 
-		[ 6 , 7,'8',
-		'11',12,13], // Z0
+		[ 11 , 12 ,'13',
+		 '16', 17 , 18 ], // Z0
 
-		['7',  8,
-		 12 , 13,
-		 17 ,'18'],	 // Z1
+		['12', 13 ,
+		  17 , 18,
+		  22 ,'23'],	 // Z1
 
-		[11 ,12,'13',
-		'16',17, 18], // Z2
+		[ 16 , 17 ,'18',
+		 '21', 22 , 23 ], // Z2
 
-		['6',  7,
-		 11 , 12,
-		 16 ,'17'],	 // Z3
+		['11', 12 ,
+		  16 , 17 ,
+		  21 ,'22'],	 // Z3
 	],[	
-		['6', 7, '8',
-		 11 ,12, 13], // T0
+		['11', 12 ,'13',
+		  16 , 17 , 18 ], // T0
 
-		[ 7, '8',
-		 12, 13 , 
-		 17,'18'], // T1
+		[ 12 ,'13',
+		  17 , 18 , 
+		  22 ,'23'], // T1
 
-		 [11 ,12, 13,
-		 '16',17,'18'], // T2
+		[ 16 , 17 , 18 ,
+		 '21', 22 ,'23'], // T2
 
-		['6', 7,
-		 11 ,12, 
-		'16',17] // T3
+		['11', 12 ,
+		  16 , 17 , 
+		 '21', 22 ] // T3 ========== ovde sa stao
 	],[
-		['6', 7 ,  8,
-		 11 ,12 ,'13'], // S0
+		['11', 12 , 13 ,
+		  16 , 17 ,'18'], // S0
 
-		[ 7 , '8',
-		 12 , 13 ,
-		'17', 18], // S1
+		[ 12 ,'13',
+		  17 , 18 ,
+		 '22', 23], // S1
 
-		['11', 12 , 13,
-		  16 , 17 ,'18'], // S2
+		['16', 17 , 18,
+		  21 , 22 ,'23'], // S2
 
-		[ 6 , '7',
-		 11 , 12 ,
-		'16', 17] // S3
+		[ 11 ,'12',
+		  16 , 17 ,
+		 '21', 22 ] // S3
 	],[	
-		['6','7', 8,
-		 11, 12, 13], // L0
+		['11','12', 13 ,
+		  16 , 17 , 18 ], // L0
 
-		[ 7, '8',
-		 12,'13',
-		 17, 18], // L1
+		[ 12 ,'13',
+		  17 ,'18',
+		  22 , 23 ], // L1
 
-		[11, 12,  13,
-		 16,'17','18'], // L2
+		[ 16 , 17 , 18 ,
+		  21 ,'22','23'], // L2
 
-		[ 6 , 7,
-		'11',12,
-		'16',17] // L3
+		[ 11 , 12 ,
+		 '16', 17 ,
+		 '21', 22 ] // L3
 
 	],[	
-		[ 6,'7','8',
-		 11, 12,13], // J0
+		[ 11 ,'12','13',
+		  16 , 17 , 18 ], // J0
 
-		[ 7,  8,
-		 12,'13',
-		 17,'18'], // J1
+		[ 12 , 13 ,
+		  17 ,'18',
+		  22 ,'23'], // J1
 
-		[ 11 , 12 ,13,
-		 '16','17',18], // J2
+		[ 16 , 17 , 18 ,
+		 '21','22', 23 ], // J2
 
-		['6', 7,
-		'11',12,
-		 16 ,17], // J3
+		['11', 12 ,
+		 '16', 17 ,
+		  21 , 22 ], // J3
 	]
 ]
+
+
 // zamrznuti sa for -> Object.freez(tetraminoStartingPosition)
 const tetsOredred = ["██","▄▄▄▄","▀█▄","▄█▄","▄█▀","▄▄█","█▄▄"]
 let tets = ["██","▄▄▄▄","▀█▄","▄█▄","▄█▀","▄▄█","█▄▄"]
@@ -252,37 +254,81 @@ function rotateToState (nextState, diffPos) {
 let gravity = "down"
 
 function gravityUp (e) {
-	if (e.key == 'w') {
-		gravity = 'up'
+	if (e.key == 'w' && gravity != "up") {
 		container.style.border = "16px solid #222"
 		container.style.borderTop = "16px solid blue"
-	};
+		
+		// pomeranje pocetne pozicije
+		if (gravity == "down" || gravity == "left") { 
+			for (let t of tetraminoStartingPosition) {
+				for (let rot of t) {
+					for (let i in rot) {
+					    typeof rot[i]=='string' ? rot[i]=String(rot[i] - +4) : rot[i]-=4
+					}
+				}
+			}
+		}
+		gravity = 'up'
+	}
 }
 addEventListener("keydown", gravityUp)
 
 function gravityRight (e) {
-	if (e.key == 'd') {
-		gravity = 'right'
+	if (e.key == 'd' && gravity != "right") {
 		container.style.border = "16px solid #222"
 		container.style.borderRight = "16px solid red"
+		
+		// pomeranje pocetne pozicije
+		if (gravity == "down" || gravity == "left") { 
+			for (let t of tetraminoStartingPosition) {
+				for (let rot of t) {
+					for (let i in rot) {
+					    typeof rot[i]=='string' ? rot[i]=String(rot[i] - +4) : rot[i]-=4
+					}
+				}
+			}
+		}
+		gravity = 'right'
 	};
 }
 addEventListener("keydown", gravityRight)
 
 function gravityDown (e) {
-	if (e.key == 's') {
-		gravity = 'down'
+	if (e.key == 's' && gravity != "down") {
 		container.style.border = "16px solid #222"
 		container.style.borderBottom = "16px solid yellow"
+
+		// pomeranje pocetne pozicije
+		if (gravity == "up" || gravity == "right") {
+			for (let t of tetraminoStartingPosition) {
+				for (let rot of t) {
+					for (let i in rot) {
+					    typeof rot[i]=='string' ? rot[i]=String(rot[i] - -4) : rot[i]+=4
+					}
+				}
+			}
+		}
+		gravity = 'down'
 	}; 
 } 
 addEventListener("keydown", gravityDown)
 
 function gravityLeft (e) {
-	if (e.key == 'a') {
-		gravity = 'left'
+	if (e.key == 'a' && gravity != "left") {
 		container.style.border = "16px solid #222"
 		container.style.borderLeft = "16px solid green"
+
+		// pomeranje pocetne pozicije
+		if (gravity == "up" || gravity == "right") {
+			for (let t of tetraminoStartingPosition) {
+				for (let rot of t) {
+					for (let i in rot) {
+					    typeof rot[i]=='string' ? rot[i]=String(rot[i] - -4) : rot[i]+=4
+					}
+				}
+			}
+		}
+		gravity = 'left'
 	}; 
 }
 addEventListener("keydown", gravityLeft)
@@ -827,7 +873,7 @@ To je problem
 
 */
 
-// git commit -m "Dodao sam next i hold. Radi OK."
+// git commit -m "gravity => Pomeranje pocetne pozicije."
 // git branch develop
 // vratim se na roditeljsku granu master i odatle pozovem `git merge develop`.
 // Pre toga za svaki slucaj uraditi COPY-BCKUP
