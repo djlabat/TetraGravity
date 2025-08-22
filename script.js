@@ -615,7 +615,17 @@ addEventListener("keydown", rotation_I_CCW)
  */
 function dropTet (e) { 
 
-	if (e.key === " ") {
+	if (e.key === " ") { 
+
+		// Blokiranje nemoguceg poteza
+		tetPosNums = tetraminoPosition.filter(t => typeof t == "number") // [4 broja]
+		for (let t of tetPosNums) {
+			if (boxes[t].classList.contains("droped")) {
+				// cim naidje na jednog da je true, prekida se f-ja
+				return 
+  			}
+		}
+
 		addClass("droped")
 		clearClass("ghost")
 		nextTetramino()
