@@ -440,8 +440,7 @@ function rotation_LST_CW (e) {
 
 		}
 
-	}	
-
+	}
 }
 addEventListener("keydown", rotation_LST_CW)
 
@@ -617,7 +616,7 @@ function dropTet (e) {
 
 	if (e.key === " ") { 
 
-		// Blokiranje nemoguceg poteza
+		// Blokiranje nemoguceg preklapajuceg poteza
 		tetPosNums = tetraminoPosition.filter(t => typeof t == "number") // [4 broja]
 		for (let t of tetPosNums) {
 			if (boxes[t].classList.contains("droped")) {
@@ -719,6 +718,8 @@ function inHold (e) {
 
 		// indexOfGhost se apdejtuje
 		indexOfghost = getIndefOfGhost()
+
+		currentTetRotState = 0
 	}
 }
 addEventListener("keydown", inHold)
@@ -873,14 +874,59 @@ function clearLine () {
 
 
 
+/*
+████████╗██╗███╗   ███╗███████╗
+╚══██╔══╝██║████╗ ████║██╔════╝
+   ██║   ██║██╔████╔██║█████╗  
+   ██║   ██║██║╚██╔╝██║██╔══╝  
+   ██║   ██║██║ ╚═╝ ██║███████╗
+   ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝*/
+
+
+function resetTimeBar () {
+	let timeDrop = Date.now().toString()
+	
+	console.log(timeDrop)
+}                               
+
+
+
+///////////
+// DEBUG //
+///////////
+function debug (e) {
+	if ( [..."zxcwasd ", "ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"].some(k=>e.key == k) ) {
+		console.log("%c ### DEBUGGING ### \n", "color:#ff0", "Pritisnuto dugme:", e.key, "\n", "tetraminoPosition:", tetraminoPosition, "\n", "currentTetRotState:", currentTetRotState, "\n", "gravity:", gravity)
+	}
+}
+addEventListener("keydown", debug)
+
+/* BUG BELEZNIK:
+Desava se kada se koristi HOLD i/ili ROTATE (LSTI)
+Pri pozivanju addClass() i clearClass()
+
+Pri promeni gravity na dole, pometim tet dole do ivice, rotacija.
+tetraminoPosition dobije vrednosti vece od 24
+*/
 
 /* TO DO:
-Dodati gravitaciju.
-boxes2 je html colection
-a boxes nije
-To je problem
+vreme tece => .time-bar se smanjuje.
+Pri svakom odigranom potezu time-bar se resetuje. 
+Ako se skroz isprazni => Game Over
+
+Broje se:
+	NAPRAVLJENE LINIJE,
+	odigranih poteza,
+	Ukupno vreme igre,
+	holdovi
+	promena gravitavije
 
 
+
+Score:
+visak vremena
+vise linija od jednom
+clear board
 */
 
 // git commit -m "gravity => Pomeranje pocetne pozicije."
