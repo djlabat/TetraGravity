@@ -64,3 +64,10 @@ p {
 	font-weight: bold;
 }
 
+.time-bar {
+	position: relative;
+	width: 385px;
+	height: 8px;
+	margin: 16px auto;
+	background-color: white;
+}

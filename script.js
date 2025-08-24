@@ -135,6 +135,7 @@ const cols = [[...col0], [...col1], [...col2], [...col3], [...col4]]
 const boradWidth = 5
 const boardHight = 5
 
+// .ghost [0]
 let indexOfghost = getIndefOfGhost()
 
 // Pozicija tetramina
@@ -142,16 +143,35 @@ let tetraminoPosition = [... [...tetraminoStartingPosition[indexOfghost]] [0]]
 let differencePosition = 0
 let currentTetRotState = 0 // it can be 0, 1, 2, 3 witch means: up, right, down, left 
 
+// TIME VARIJABLE
+let maxDropTime = 5_000
+let startTime = Date.now()
+let endTime = 0
 
-// Dodavanje klase .ghost na svaki box od Tetromine
+// GAME OVER
+let gameOver = setTimeout(()=>{
+	console.log("GAME OVER", "\nSCORE:", score)
+	alert("GAME OVER")
+	return 
+}, maxDropTime)
+
+// SCORE
+let score = 0
+
+// ANIMACIJA TIME-BAR
+const timeBar = document.querySelector(".time-bar")
+let sirinaTimeBara = timeBar.offsetWidth
+
+
+// Dodavanje klase .ghost na prvi Tetromino
 for (let t of tetraminoPosition) {
 	if (typeof t === "number") {
-		boxes[t].classList.add("ghost") // add .ghost
+		boxes[t].classList.add("ghost")
 	}
 }
 
 
-/*
+/* UTILS
 ██╗   ██╗████████╗██╗██╗     ███████╗
 ██║   ██║╚══██╔══╝██║██║     ██╔════╝
 ██║   ██║   ██║   ██║██║     ███████╗
@@ -246,10 +266,27 @@ function rotateToState (nextState, diffPos) {
 	)	
 }
 
+function animTimeBar(tren){
+  sirinaTimeBara -= 1
+	if (sirinaTimeBara < 1) {
+		sirinaTimeBara = 385
+    timeBar.style.width = sirinaTimeBara+"px"
+		cancelAnimationFrame(animTimeBar)
+		return 
+	}
+  timeBar.style.width = sirinaTimeBara + "px";
+  requestAnimationFrame(animTimeBar);
+}
 
-////////////////////////////////
-//          GRAVITY           //
-////////////////////////////////
+/**GRAVITY
+ *     ██████╗ ██████╗  █████╗ ██╗   ██╗██╗████████╗██╗   ██╗
+ *    ██╔════╝ ██╔══██╗██╔══██╗██║   ██║██║╚══██╔══╝╚██╗ ██╔╝
+ *    ██║  ███╗██████╔╝███████║██║   ██║██║   ██║    ╚████╔╝ 
+ *    ██║   ██║██╔══██╗██╔══██║╚██╗ ██╔╝██║   ██║     ╚██╔╝  
+ *    ╚██████╔╝██║  ██║██║  ██║ ╚████╔╝ ██║   ██║      ██║   
+ *     ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚═╝   ╚═╝      ╚═╝   
+ *                                                           
+ */
 
 let gravity = "down"
 
@@ -338,7 +375,7 @@ addEventListener("keydown", gravityLeft)
 
 
 
-/*
+/*MOVE
 ███╗   ███╗ ██████╗ ██╗   ██╗███████╗
 ████╗ ████║██╔═══██╗██║   ██║██╔════╝
 ██╔████╔██║██║   ██║██║   ██║█████╗  
@@ -385,7 +422,7 @@ addEventListener("keydown", (e) => {
 
 
 
-/*
+/*ROTATE
 ██████╗  ██████╗ ████████╗ █████╗ ████████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔══██╗╚══██╔══╝██╔════╝
 ██████╔╝██║   ██║   ██║   ███████║   ██║   █████╗  
@@ -395,8 +432,8 @@ addEventListener("keydown", (e) => {
 
 
 
-
-/*          ██╗     ███████╗████████╗          ██╗  
+/*LST->
+            ██╗     ███████╗████████╗          ██╗  
             ██║     ██╔════╝╚══██╔══╝          ╚██╗ 
             ██║     ███████╗   ██║       █████╗ ╚██╗
             ██║     ╚════██║   ██║       ╚════╝ ██╔╝
@@ -446,8 +483,8 @@ addEventListener("keydown", rotation_LST_CW)
 
 
 
-
-/*██╗          ██╗     ███████╗████████╗
+/*<-LST
+  ██╗          ██╗     ███████╗████████╗
  ██╔╝          ██║     ██╔════╝╚══██╔══╝
 ██╔╝ █████╗    ██║     ███████╗   ██║   
 ╚██╗ ╚════╝    ██║     ╚════██║   ██║   
@@ -499,8 +536,8 @@ addEventListener("keydown", rotation_LST_CCW)
 
 
 
-
-/*      	    ██╗          ██╗  
+/*I->
+           	    ██╗          ██╗  
         	    ██║          ╚██╗ 
         	    ██║    █████╗ ╚██╗
         	    ██║    ╚════╝ ██╔╝
@@ -553,8 +590,8 @@ addEventListener("keydown", rotation_I_CW)
 
 
 
-
-/*██╗          ██╗
+/*<-I
+  ██╗          ██╗
  ██╔╝          ██║
 ██╔╝ █████╗    ██║
 ╚██╗ ╚════╝    ██║
@@ -604,7 +641,7 @@ function rotation_I_CCW (e) {
 addEventListener("keydown", rotation_I_CCW)
 
 
-/*
+/*NEXT
 ███╗   ██╗███████╗██╗  ██╗████████╗
 ████╗  ██║██╔════╝╚██╗██╔╝╚══██╔══╝
 ██╔██╗ ██║█████╗   ╚███╔╝    ██║   
@@ -625,6 +662,31 @@ function dropTet (e) {
   			}
 		}
 
+		// RESETOVANJE TAJMERA ZA GAME OVER
+		clearTimeout(gameOver)
+		gameOver = setTimeout(()=>{
+			console.log("GAME OVER", "\nSCORE:", score)
+			alert("GAME OVER")
+			return 
+		}, maxDropTime)
+
+		// Resetovanje animacije za .time-bat
+		requestAnimationFrame(animTimeBar);
+
+		// Merenje brzine poteza
+		endTime = Date.now() // ZAVRSAVA ODBROJAVANJE PRETHODNOG
+		const brzinaDropovanja = endTime - startTime // RACUNA RAZLIKU
+
+		// Skor za brzinu
+		const poeni = maxDropTime - brzinaDropovanja
+		score += poeni > 0 ? poeni : 0
+
+		console.log(
+			"brzinaDropovanja:", brzinaDropovanja,
+			 "\nPOENI ZA BRZINU:", poeni, 
+			 "\nSCORE:", score
+		 )
+
 		addClass("droped")
 		clearClass("ghost")
 		nextTetramino()
@@ -642,6 +704,8 @@ function dropTet (e) {
 		addClass("ghost")
 		clearLine()
 		indexOfghost = getIndefOfGhost()
+
+		startTime = Date.now()
 	}
 
 }
@@ -656,7 +720,7 @@ addEventListener("keydown", dropTet)
 
 
 
-/*
+/*BAG
 ██████╗  █████╗  ██████╗ 
 ██╔══██╗██╔══██╗██╔════╝ 
 ██████╔╝███████║██║  ███╗
@@ -735,7 +799,7 @@ addEventListener("keydown", inHold)
 
 
 
-/* 
+/* CLEARLINE
  ██████╗██╗     ███████╗ █████╗ ██████╗ ██╗     ██╗███╗   ██╗███████╗
 ██╔════╝██║     ██╔════╝██╔══██╗██╔══██╗██║     ██║████╗  ██║██╔════╝
 ██║     ██║     █████╗  ███████║██████╔╝██║     ██║██╔██╗ ██║█████╗  
@@ -874,7 +938,7 @@ function clearLine () {
 
 
 
-/*
+/*TIME
 ████████╗██╗███╗   ███╗███████╗
 ╚══██╔══╝██║████╗ ████║██╔════╝
    ██║   ██║██╔████╔██║█████╗  
@@ -883,33 +947,32 @@ function clearLine () {
    ╚═╝   ╚═╝╚═╝     ╚═╝╚══════╝*/
 
 
-function resetTimeBar () {
-	let timeDrop = Date.now().toString()
-	
-	console.log(timeDrop)
-}                               
 
 
-
-///////////
-// DEBUG //
-///////////
+/**
+ *DEBUG
+ *    ██████╗ ███████╗██████╗ ██╗   ██╗ ██████╗ 
+ *    ██╔══██╗██╔════╝██╔══██╗██║   ██║██╔════╝ 
+ *    ██║  ██║█████╗  ██████╔╝██║   ██║██║  ███╗
+ *    ██║  ██║██╔══╝  ██╔══██╗██║   ██║██║   ██║
+ *    ██████╔╝███████╗██████╔╝╚██████╔╝╚██████╔╝
+ *    ╚═════╝ ╚══════╝╚═════╝  ╚═════╝  ╚═════╝ 
+ *                                              
+ */
 function debug (e) {
 	if ( [..."zxcwasd ", "ArrowUp", "ArrowRight", "ArrowDown", "ArrowLeft"].some(k=>e.key == k) ) {
 		console.log("%c ### DEBUGGING ### \n", "color:#ff0", "Pritisnuto dugme:", e.key, "\n", "tetraminoPosition:", tetraminoPosition, "\n", "currentTetRotState:", currentTetRotState, "\n", "gravity:", gravity)
 	}
 }
-addEventListener("keydown", debug)
-
-/* BUG BELEZNIK:
-Desava se kada se koristi HOLD i/ili ROTATE (LSTI)
-Pri pozivanju addClass() i clearClass()
-
-Pri promeni gravity na dole, pometim tet dole do ivice, rotacija.
-tetraminoPosition dobije vrednosti vece od 24
-*/
+// addEventListener("keydown", debug)
 
 /* TO DO:
+Score:
+visak vremena
+vise linija od jednom
+clear board
+
+
 vreme tece => .time-bar se smanjuje.
 Pri svakom odigranom potezu time-bar se resetuje. 
 Ako se skroz isprazni => Game Over
@@ -923,10 +986,6 @@ Broje se:
 
 
 
-Score:
-visak vremena
-vise linija od jednom
-clear board
 */
 
 // git commit -m "gravity => Pomeranje pocetne pozicije."
